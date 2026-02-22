@@ -5,12 +5,13 @@ import cors from 'cors';
 
 import authRoutes from './routes/auth.routes.js';
 import taskRoutes from './routes/tasks.routes.js';
+import { FRONTEND_URL } from './config.js';
 
 const app = express();
 
 // Configuramos cors para comunicar el backend con nuestro frontend
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: FRONTEND_URL,
     credentials: true
 }));
 

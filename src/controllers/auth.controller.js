@@ -4,6 +4,8 @@ import { createTokenAccess } from '../libs/jwt.js'
 import jwt from 'jsonwebtoken'
 import { TOKEN_SECRET } from '../config.js'
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -26,7 +28,12 @@ export const register = async (req, res) => {
 		const userSaved = await newUser.save();
 
 		const token = await createTokenAccess({ id: userSaved._id})
-		res.cookie('token', token);
+		
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+    });
 
 		res.json({
 		id: userSaved._id,
@@ -62,7 +69,11 @@ export const login = async (req, res) => {
 
     const token = await createTokenAccess({ id: userSaved._id });
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+    });
 
     return res.json({
       id: userSaved._id,
@@ -80,9 +91,12 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-	res.cookie('token', "", {
-		expires: new Date(0)
-	})
+	res.cookie("token", "", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    expires: new Date(0),
+  });
 
 	return res.sendStatus(200);
 }
