@@ -12,7 +12,7 @@ export default function TasksPage() {
   }, [])
 
   // Si no hay tareas se muestra este mensaje
-  if (tasks.lenght === 0) {
+  if (tasks.length === 0) {
     return (<h1 className="text-white">No tasks</h1>)
   }
 
